@@ -22,7 +22,7 @@ int genome1::build(const string &file)
 		{
 			transcript t = g.transcripts[k];
 			if(t.exons.size() <= 1) continue;
-			if(merge_coverage_as_counts == true) t.coverage = 1.0;
+			t.occurrence = 1.0;
 			add_transcript(t);
 		}
 	}
@@ -58,17 +58,23 @@ int genome1::add_transcript(const transcript &t)
 	{
 		int k = intron_hashing[s];
 		assert(k >= 0 && k < transcripts.size());
-		transcript tt = transcripts[k];
-		if(transcripts[k].length() > t.length()) 
-		{
-			transcripts[k].coverage += t.coverage;
-		}
-		else
-		{
-			double c = transcripts[k].coverage + t.coverage;
-			transcripts[k] = t;
-			transcripts[k].coverage = c;
-		}
+		transcript* tt = &transcripts[k];
+
+		tt->occurrence += t.occurrence;
+
+		double tt_rc = tt->coverage * tt->length();
+		double t_rc = t.coverage * t.length();
+
+		// the common bps of the transcripts will be reported
+		if (tt->start < t.start)
+			tt->update_start(t.start);
+		if (tt->end > t.end)
+			tt->update_end(t.end);
+
+		double new_factor = tt->get_merge_factor(t.get_factor());
+
+		tt->coverage = (tt_rc + t_rc) / tt->length();
+		tt->assign_RPKM(new_factor);
 	}
 	return 0;
 }
@@ -135,7 +141,7 @@ int genome1::write(const string &file)
 	{
 		transcript &t = transcripts[i];
 		if(t.coverage < min_transcript_coverage) continue;
-		t.write(fout);
+		t.write(fout, (counts_and_coverage || merge_coverage_as_counts), (counts_and_coverage || !merge_coverage_as_counts));
 	}
 	fout.close();
 	return 0;

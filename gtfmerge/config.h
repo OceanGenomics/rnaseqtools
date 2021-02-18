@@ -9,6 +9,7 @@ using namespace std;
 
 extern double min_transcript_coverage;
 extern bool merge_coverage_as_counts;
+extern bool counts_and_coverage;
 extern int num_threads;
 
 int parse_parameters(int argc, const char ** argv);

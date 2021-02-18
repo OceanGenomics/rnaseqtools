@@ -41,6 +41,7 @@ int transcript::assign(const item &e)
 	strand = e.strand;
 	frame = e.frame;
 	coverage = e.coverage;
+	occurrence = e.occurrence;
 	RPKM = e.RPKM;
 	FPKM = e.FPKM;
 	TPM = e.TPM;
@@ -73,6 +74,7 @@ int transcript::clear()
 	strand = '.';
 	frame = -1;
 	coverage = 0;
+	occurrence = 0;
 	RPKM = 0;
 	TPM = 0;
 	return 0;
@@ -88,6 +90,24 @@ int transcript::add_exon(const item &e)
 {
 	assert(e.transcript_id == transcript_id);
 	add_exon(e.start, e.end);
+	return 0;
+}
+
+int transcript::update_start(int s) 
+{
+	if(exons.size() == 0) return 0;
+
+	start = s;
+	exons[0].first = s;
+	return 0;
+}
+
+int transcript::update_end(int e)
+{
+	if(exons.size() == 0) return 0;
+
+	end = e;
+	exons[exons.size()-1].second = e;
 	return 0;
 }
 
@@ -125,6 +145,19 @@ int transcript::assign_RPKM(double factor)
 {
 	RPKM = coverage * factor;
 	return 0;
+}
+
+double transcript::get_factor() const
+{
+	return RPKM / coverage;
+}
+
+// get new factor after merging this transcript with another one with coverage = cov and RPKM = rpkm
+// factor = 10^9 / read_cnt
+double transcript::get_merge_factor(double other_factor) {
+	double factor = get_factor();
+	
+	return 1.0 / (1.0 / factor + 1.0 / other_factor);
 }
 
 int transcript::length() const
@@ -190,6 +223,51 @@ string transcript::label() const
 	PI32 p = get_bounds();
 	sprintf(buf, "%s:%d-%d", seqname.c_str(), p.first, p.second);
 	return string(buf);
+}
+
+int transcript::write(ostream &fout, bool write_occ, bool write_cov) const
+{
+	fout.precision(4);
+	fout<<fixed;
+
+	if(exons.size() == 0) return 0;
+	
+	PI32 p = get_bounds();
+
+	fout<<seqname.c_str()<<"\t";				// chromosome name
+	fout<<source.c_str()<<"\t";					// source
+	fout<<"transcript\t";						// feature
+	fout<<p.first + 1<<"\t";					// left position
+	fout<<p.second<<"\t";						// right position
+	fout<<1000<<"\t";							// score, now as expression
+	fout<<strand<<"\t";							// strand
+	fout<<".\t";								// frame
+	fout<<"gene_id \""<<gene_id.c_str()<<"\"; ";
+	fout<<"transcript_id \""<<transcript_id.c_str()<<"\"; ";
+	if(gene_type != "") fout<<"gene_type \""<<gene_type.c_str()<<"\"; ";
+	if(transcript_type != "") fout<<"transcript_type \""<<transcript_type.c_str()<<"\"; ";
+	fout<<"RPKM \""<<RPKM<<"\"; ";
+	if (write_occ)
+		fout<<"occ \""<<occurrence<<"\"; ";
+	if (write_cov)
+		fout<<"cov \""<<coverage<<"\";";
+	fout<<endl;
+
+	for(int k = 0; k < exons.size(); k++)
+	{
+		fout<<seqname.c_str()<<"\t";		// chromosome name
+		fout<<source.c_str()<<"\t";			// source
+		fout<<"exon\t";						// feature
+		fout<<exons[k].first + 1<<"\t";		// left position
+		fout<<exons[k].second<<"\t";		// right position
+		fout<<1000<<"\t";					// score, now as expression
+		fout<<strand<<"\t";					// strand
+		fout<<".\t";						// frame
+		fout<<"gene_id \""<<gene_id.c_str()<<"\"; ";
+		fout<<"transcript_id \""<<transcript_id.c_str()<<"\"; ";
+		fout<<"exon \""<<k + 1<<"\"; "<<endl;
+	}
+	return 0;
 }
 
 int transcript::write(ostream &fout) const

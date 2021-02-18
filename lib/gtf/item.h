@@ -37,6 +37,7 @@ public:
 	char strand;
 	int frame;
 	double coverage;
+	double occurrence;
 	double FPKM;
 	double RPKM;
 	double TPM;
