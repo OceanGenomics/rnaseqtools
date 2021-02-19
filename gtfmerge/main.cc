@@ -18,7 +18,8 @@ int main(int argc, const char **argv)
 		return 0;
 	}
 
-	parse_parameters(argc, argv);
+	if (parse_parameters(argc, argv) == 1)
+		return 1;
 
 	if(string(argv[1]) == "union")
 	{

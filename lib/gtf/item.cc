@@ -40,6 +40,7 @@ int item::parse(const string &s)
 
 	char buf2[10240];
 	coverage = 0;
+	occurrence = 0;
 	RPKM = 0;
 	TPM = 0;
 	while(sstr.eof() == false)
@@ -79,9 +80,9 @@ int item::parse(const string &s)
 
 int item::print() const
 {
-	printf("%s\t%s\t%s\t%d\t%d\t%.1lf\t%c\t%c\ttranscript_id \"%s\"; gene_id \"%s\"; coverage \"%.2f\"; RPKM \"%.2lf\"\n",
+	printf("%s\t%s\t%s\t%d\t%d\t%.1lf\t%c\t%c\ttranscript_id \"%s\"; gene_id \"%s\"; coverage \"%.2f\"; occurrence \"%.2f\"; RPKM \"%.2lf\"\n",
 			seqname.c_str(), source.c_str(), feature.c_str(), start, end, score, strand, frame,
-			transcript_id.c_str(), gene_id.c_str(), coverage, RPKM);
+			transcript_id.c_str(), gene_id.c_str(), coverage, occurrence, RPKM);
 	return 0;
 }
 

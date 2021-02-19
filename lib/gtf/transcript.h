@@ -42,6 +42,7 @@ public:
 	int frame;
 	double coverage;
 	double covratio;
+	double occurrence;
 	double RPKM;
 	double FPKM;
 	double TPM;
@@ -51,18 +52,23 @@ public:
 public:
 	int add_exon(int s, int t);
 	int add_exon(const item &e);
+	int update_start(int s);
+	int update_end(int e);
 	int assign_RPKM(double factor);
 	int sort();
 	int clear();
 	int shrink();
 	int assign(const item &e);
 	int length() const;
+	double get_factor() const;
+	double get_merge_factor(double other_factor);
 	PI32 get_bounds() const;
 	PI32 get_first_intron() const;
 	vector<PI32> get_intron_chain() const;
 	bool intron_chain_match(const transcript &t) const;
 	string label() const;
 	int write(ostream &fout) const;
+	int write(ostream &fout, bool write_occ, bool write_cov) const;
 };
 
 #endif
