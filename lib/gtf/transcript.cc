@@ -234,18 +234,18 @@ int transcript::write(ostream &fout, bool write_occ, bool write_cov) const
 	
 	PI32 p = get_bounds();
 
-	fout<<seqname.c_str()<<"\t";				// chromosome name
-	fout<<source.c_str()<<"\t";					// source
+	fout<<seqname<<"\t";				// chromosome name
+	fout<<source<<"\t";					// source
 	fout<<"transcript\t";						// feature
 	fout<<p.first + 1<<"\t";					// left position
 	fout<<p.second<<"\t";						// right position
 	fout<<1000<<"\t";							// score, now as expression
 	fout<<strand<<"\t";							// strand
 	fout<<".\t";								// frame
-	fout<<"gene_id \""<<gene_id.c_str()<<"\"; ";
-	fout<<"transcript_id \""<<transcript_id.c_str()<<"\"; ";
-	if(gene_type != "") fout<<"gene_type \""<<gene_type.c_str()<<"\"; ";
-	if(transcript_type != "") fout<<"transcript_type \""<<transcript_type.c_str()<<"\"; ";
+	fout<<"gene_id \""<<gene_id<<"\"; ";
+	fout<<"transcript_id \""<<transcript_id<<"\"; ";
+	if(gene_type != "") fout<<"gene_type \""<<gene_type<<"\"; ";
+	if(transcript_type != "") fout<<"transcript_type \""<<transcript_type<<"\"; ";
 	fout<<"RPKM \""<<RPKM<<"\"; ";
 	if (write_occ)
 		fout<<"occ \""<<occurrence<<"\"; ";
@@ -255,16 +255,16 @@ int transcript::write(ostream &fout, bool write_occ, bool write_cov) const
 
 	for(int k = 0; k < exons.size(); k++)
 	{
-		fout<<seqname.c_str()<<"\t";		// chromosome name
-		fout<<source.c_str()<<"\t";			// source
+		fout<<seqname<<"\t";		// chromosome name
+		fout<<source<<"\t";			// source
 		fout<<"exon\t";						// feature
 		fout<<exons[k].first + 1<<"\t";		// left position
 		fout<<exons[k].second<<"\t";		// right position
 		fout<<1000<<"\t";					// score, now as expression
 		fout<<strand<<"\t";					// strand
 		fout<<".\t";						// frame
-		fout<<"gene_id \""<<gene_id.c_str()<<"\"; ";
-		fout<<"transcript_id \""<<transcript_id.c_str()<<"\"; ";
+		fout<<"gene_id \""<<gene_id<<"\"; ";
+		fout<<"transcript_id \""<<transcript_id<<"\"; ";
 		fout<<"exon \""<<k + 1<<"\"; "<<endl;
 	}
 	return 0;
