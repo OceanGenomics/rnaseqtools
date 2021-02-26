@@ -11,13 +11,15 @@ See LICENSE for licensing.
 
 #include "genome.h"
 #include "util.h"
+#include "gz_reader.h"
 
 genome::genome()
 {}
 
 genome::genome(const string &file)
 {
-	read(file);
+	read_gz(file);
+	// read(file);
 }
 
 genome::~genome()
@@ -33,22 +35,18 @@ int genome::add_gene(const gene &g)
 	return 0;
 }
 
-int genome::read(const string &file)
+int genome::read_gz(const string &file)
 {
-	if(file == "") return 0;
-
-	ifstream fin(file.c_str());
-	if(fin.fail())
-	{
-		printf("open file %s error\n", file.c_str());
-		return 0;
-	}
+	gz_reader gzrd;
+	if (gzrd.open_gz(file) != 0) {
+        return 0;
+    }
 
 	char line[102400];
 	
 	genes.clear();
 	g2i.clear();
-	while(fin.getline(line, 102400, '\n'))
+	while(gzrd.getline(line, 102400, '\n'))
 	{
 		item ge(line);
 		if(g2i.find(ge.gene_id) == g2i.end())
@@ -73,8 +71,53 @@ int genome::read(const string &file)
 		genes[i].shrink();
 	}
 
+	gzrd.close_gz();
+
 	return 0;
 }
+
+// int genome::read(const string &file)
+// {
+// 	if(file == "") return 0;
+
+// 	ifstream fin(file.c_str());
+// 	if(fin.fail())
+// 	{
+// 		printf("open file %s error\n", file.c_str());
+// 		return 0;
+// 	}
+
+// 	char line[102400];
+	
+// 	genes.clear();
+// 	g2i.clear();
+// 	while(fin.getline(line, 102400, '\n'))
+// 	{
+// 		item ge(line);
+// 		if(g2i.find(ge.gene_id) == g2i.end())
+// 		{
+// 			gene gg;
+// 			if(ge.feature == "transcript") gg.add_transcript(ge);
+// 			else if(ge.feature == "exon") gg.add_exon(ge);
+// 			g2i.insert(pair<string, int>(ge.gene_id, genes.size()));
+// 			genes.push_back(gg);
+// 		}
+// 		else
+// 		{
+// 			int k = g2i[ge.gene_id];
+// 			if(ge.feature == "transcript") genes[k].add_transcript(ge);
+// 			else if(ge.feature == "exon") genes[k].add_exon(ge);
+// 		}
+// 	}
+
+// 	for(int i = 0; i < genes.size(); i++)
+// 	{
+// 		genes[i].sort();
+// 		genes[i].shrink();
+// 	}
+
+// 	return 0;
+// }
 
 int genome::write(const string &file) const
 {

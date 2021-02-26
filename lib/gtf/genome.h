@@ -9,6 +9,7 @@ See LICENSE for licensing.
 
 #include <string>
 #include <map>
+#include <zlib.h>
 #include "gene.h"
 
 using namespace std;
@@ -27,6 +28,7 @@ public:
 public:
 	// read and write
 	int read(const string &file);
+	int read_gz(const string &file);
 	int write(const string &file) const;
 
 	// modify

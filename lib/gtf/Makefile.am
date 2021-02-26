@@ -7,4 +7,5 @@ libgtf_a_CPPFLAGS = -I$(UTILDIR)
 libgtf_a_SOURCES = item.h item.cc \
 				   transcript.h transcript.cc \
 				   gene.h gene.cc \
+				   gz_reader.h gz_reader.cc \
 				   genome.h genome.cc

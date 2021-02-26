@@ -17,6 +17,8 @@ AC_PROG_RANLIB
 
 # Checks for header files.
 AC_CHECK_HEADERS([stdint.h])
+AC_CHECK_HEADERS([zlib.h])
+AC_SEARCH_LIBS(deflate, z)
 
 # Checks for typedefs, structures, and compiler characteristics.
 #AC_CHECK_HEADER_STDBOOL
