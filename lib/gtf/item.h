@@ -31,6 +31,7 @@ public:
 	string transcript_id;
 	string transcript_type;
 	string gene_type;
+	string samples;
 	int32_t start;
 	int32_t end;
 	double score;

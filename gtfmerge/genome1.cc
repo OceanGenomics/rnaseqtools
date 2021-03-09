@@ -23,6 +23,7 @@ int genome1::build(const string &file)
 			transcript t = g.transcripts[k];
 			if(t.exons.size() <= 1) continue;
 			t.occurrence = 1.0;
+			t.samples = file;
 			add_transcript(t);
 		}
 	}
@@ -61,6 +62,8 @@ int genome1::add_transcript(const transcript &t)
 		transcript* tt = &transcripts[k];
 
 		tt->occurrence += t.occurrence;
+		tt->samples += ",";
+		tt->samples += t.samples;
 
 		double tt_rc = tt->coverage * tt->length();
 		double t_rc = t.coverage * t.length();
@@ -136,12 +139,27 @@ int genome1::print_hashing()
 int genome1::write(const string &file)
 {
 	ofstream fout(file.c_str());
-	if(fout.fail()) return 0;
+	if(fout.fail()) return 1;
 	for(int i = 0; i < transcripts.size(); i++)
 	{
 		transcript &t = transcripts[i];
 		if(t.coverage < min_transcript_coverage) continue;
 		t.write(fout, (counts_and_coverage || merge_coverage_as_counts), (counts_and_coverage || !merge_coverage_as_counts));
+	}
+	fout.close();
+	return 0;
+}
+
+int genome1::write_samples(const string &file)
+{
+	string samples_file = file + ".samples.txt";
+	ofstream fout(samples_file);
+	if(fout.fail()) return 1;
+	for(int i = 0; i < transcripts.size(); i++)
+	{
+		transcript &t = transcripts[i];
+		if(t.coverage < min_transcript_coverage) continue;
+		fout << t.gene_id << "\t" << t.samples << endl;
 	}
 	fout.close();
 	return 0;

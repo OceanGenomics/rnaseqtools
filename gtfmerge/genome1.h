@@ -26,6 +26,7 @@ public:
 	int build_intersection(const genome1 &gm, genome1 &out);
 	int clear();
 	int write(const string &file);
+	int write_samples(const string &file);
 	int add_suffix(const string &p);
 	int remove_redundancy();
 	int print(int index);

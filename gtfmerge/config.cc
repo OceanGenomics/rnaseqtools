@@ -11,6 +11,7 @@ using namespace std;
 double min_transcript_coverage = -1;
 bool merge_coverage_as_counts = false;
 bool counts_and_coverage = false;
+bool print_samples = false;
 int num_threads = 1;
 
 int parse_parameters(int argc, const char ** argv)
@@ -35,6 +36,10 @@ int parse_parameters(int argc, const char ** argv)
 		{
 			counts_and_coverage = true;
 		}
+		else if(string(argv[i]) == "-w")
+		{
+			print_samples = true;
+		}
 	}
 
 	// not compatible with each other
@@ -55,5 +60,6 @@ int print_help()
 	printf(" %-14s  %s\n", "-t <integer>",  "number of threads");
 	printf(" %-14s  %s\n", "-n",  "only output number of transcript occurrences");
 	printf(" %-14s  %s\n", "-b",  "output total coverage sum as well as occurrences. Not compatible with -n");
+	printf(" %-14s  %s\n", "-w",  "write samples containing each transcript to <output-unioned-gtf>.samples.txt");
 	return 0;
 }

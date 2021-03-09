@@ -35,6 +35,7 @@ int transcript::assign(const item &e)
 	gene_id = e.gene_id;
 	transcript_id = e.transcript_id;
 	transcript_type = e.transcript_type;
+	samples = e.samples;
 	gene_type = e.gene_type;
 	start = e.start;
 	end = e.end;
@@ -69,6 +70,7 @@ int transcript::clear()
 	transcript_id = "";
 	transcript_type = "";
 	gene_type = "";
+	samples = "";
 	start = 0;
 	end = 0;
 	strand = '.';
