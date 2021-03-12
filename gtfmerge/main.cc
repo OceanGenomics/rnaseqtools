@@ -27,6 +27,8 @@ int main(int argc, const char **argv)
 		gtfmerge gm;
 		gm.build_union(argv[2]);
 		gm.gm.write(argv[3]);
+		if (print_samples)
+			gm.gm.write_samples(argv[3]);
 	}
 
     return 0;

@@ -11,13 +11,17 @@ See LICENSE for licensing.
 
 #include "genome.h"
 #include "util.h"
+#include "gz_reader.h"
+
+#define MAX_LINE_SIZE 102400
 
 genome::genome()
 {}
 
 genome::genome(const string &file)
 {
-	read(file);
+	read_gz(file);
+	// read(file);
 }
 
 genome::~genome()
@@ -33,6 +37,47 @@ int genome::add_gene(const gene &g)
 	return 0;
 }
 
+int genome::read_gz(const string &file)
+{
+	gz_reader gzrd;
+	if (gzrd.open_gz(file) != 0) {
+        return 0;
+    }
+
+	char line[MAX_LINE_SIZE];
+	
+	genes.clear();
+	g2i.clear();
+	while(gzrd.getline(line, sizeof(line), '\n'))
+	{
+		item ge(line);
+		if(g2i.find(ge.gene_id) == g2i.end())
+		{
+			gene gg;
+			if(ge.feature == "transcript") gg.add_transcript(ge);
+			else if(ge.feature == "exon") gg.add_exon(ge);
+			g2i.insert(pair<string, int>(ge.gene_id, genes.size()));
+			genes.push_back(gg);
+		}
+		else
+		{
+			int k = g2i[ge.gene_id];
+			if(ge.feature == "transcript") genes[k].add_transcript(ge);
+			else if(ge.feature == "exon") genes[k].add_exon(ge);
+		}
+	}
+
+	for(int i = 0; i < genes.size(); i++)
+	{
+		genes[i].sort();
+		genes[i].shrink();
+	}
+
+	gzrd.close_gz();
+
+	return 0;
+}
+
 int genome::read(const string &file)
 {
 	if(file == "") return 0;
@@ -44,11 +89,11 @@ int genome::read(const string &file)
 		return 0;
 	}
 
-	char line[102400];
+	char line[MAX_LINE_SIZE];
 	
 	genes.clear();
 	g2i.clear();
-	while(fin.getline(line, 102400, '\n'))
+	while(fin.getline(line, sizeof(line), '\n'))
 	{
 		item ge(line);
 		if(g2i.find(ge.gene_id) == g2i.end())

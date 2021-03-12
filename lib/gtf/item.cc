@@ -38,6 +38,8 @@ int item::parse(const string &s)
 	sstr>>buf;
 	frame = buf[0];
 
+	samples = "";
+
 	char buf2[10240];
 	coverage = 0;
 	occurrence = 0;
