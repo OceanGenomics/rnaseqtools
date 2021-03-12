@@ -13,6 +13,8 @@ See LICENSE for licensing.
 #include "util.h"
 #include "gz_reader.h"
 
+#define MAX_LINE_SIZE 102400
+
 genome::genome()
 {}
 
@@ -42,11 +44,11 @@ int genome::read_gz(const string &file)
         return 0;
     }
 
-	char line[102400];
+	char line[MAX_LINE_SIZE];
 	
 	genes.clear();
 	g2i.clear();
-	while(gzrd.getline(line, 102400, '\n'))
+	while(gzrd.getline(line, sizeof(line), '\n'))
 	{
 		item ge(line);
 		if(g2i.find(ge.gene_id) == g2i.end())
@@ -87,11 +89,11 @@ int genome::read(const string &file)
 		return 0;
 	}
 
-	char line[102400];
+	char line[MAX_LINE_SIZE];
 	
 	genes.clear();
 	g2i.clear();
-	while(fin.getline(line, 102400, '\n'))
+	while(fin.getline(line, sizeof(line), '\n'))
 	{
 		item ge(line);
 		if(g2i.find(ge.gene_id) == g2i.end())
