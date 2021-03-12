@@ -4,6 +4,7 @@ Author: Hossein Asghari
 
 #include <string>
 #include <zlib.h>
+#include <stdexcept>
 #include "gz_reader.h"
 
 gz_reader::gz_reader()
@@ -17,6 +18,7 @@ gz_reader::gz_reader()
 
 gz_reader::~gz_reader() 
 {
+    close_gz();
     free(zbuffer);
 }
 
@@ -37,6 +39,7 @@ void gz_reader::close_gz()
     if (gzinput != Z_NULL) {
         gzclose(gzinput);
     }
+    gzinput = Z_NULL;
 }
 
 void gz_reader::read_buffer(uint32_t size) {
@@ -49,7 +52,7 @@ void gz_reader::read_buffer(uint32_t size) {
     if (buff_size < 0) {
         int err;
         fprintf(stderr, "gzread error: %s\n", gzerror(gzinput, &err));
-        exit(1);
+        throw std::runtime_error("Runtime Error: error in reading gzip file above!");
     }
 }
 
@@ -59,9 +62,14 @@ uint32_t gz_reader::getline(char *line, uint32_t size, char delim) {
     uint32_t i = 0;
     while (true) {
         if (buff_pos >= buff_size) {
-            read_buffer(size);
-            if (buff_size == 0)
-                return 0;
+            try {
+                read_buffer(size);
+                if (buff_size == 0)
+                    return 0;
+            } catch(const std::runtime_error& rte) {
+                fprintf(stderr, "%s\n", rte.what());
+                return 0; 
+            }
         }
 
         cur = zbuffer[buff_pos++];

@@ -253,7 +253,7 @@ int transcript::write(ostream &fout, bool write_occ, bool write_cov) const
 		fout<<"occ \""<<occurrence<<"\"; ";
 	if (write_cov)
 		fout<<"cov \""<<coverage<<"\";";
-	fout<<endl;
+	fout<<"\n";
 
 	for(int k = 0; k < exons.size(); k++)
 	{
@@ -267,7 +267,7 @@ int transcript::write(ostream &fout, bool write_occ, bool write_cov) const
 		fout<<".\t";						// frame
 		fout<<"gene_id \""<<gene_id<<"\"; ";
 		fout<<"transcript_id \""<<transcript_id<<"\"; ";
-		fout<<"exon \""<<k + 1<<"\"; "<<endl;
+		fout<<"exon \""<<k + 1<<"\"; "<<"\n";
 	}
 	return 0;
 }
@@ -294,7 +294,7 @@ int transcript::write(ostream &fout) const
 	if(gene_type != "") fout<<"gene_type \""<<gene_type.c_str()<<"\"; ";
 	if(transcript_type != "") fout<<"transcript_type \""<<transcript_type.c_str()<<"\"; ";
 	fout<<"RPKM \""<<RPKM<<"\"; ";
-	fout<<"cov \""<<coverage<<"\";"<<endl;
+	fout<<"cov \""<<coverage<<"\";"<<"\n";
 
 	for(int k = 0; k < exons.size(); k++)
 	{
@@ -308,7 +308,7 @@ int transcript::write(ostream &fout) const
 		fout<<".\t";						// frame
 		fout<<"gene_id \""<<gene_id.c_str()<<"\"; ";
 		fout<<"transcript_id \""<<transcript_id.c_str()<<"\"; ";
-		fout<<"exon \""<<k + 1<<"\"; "<<endl;
+		fout<<"exon \""<<k + 1<<"\"; "<<"\n";
 	}
 	return 0;
 }
