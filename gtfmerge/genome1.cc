@@ -159,7 +159,7 @@ int genome1::write_samples(const string &file)
 	{
 		transcript &t = transcripts[i];
 		if(t.coverage < min_transcript_coverage) continue;
-		fout << t.gene_id << "\t" << t.samples << "\n";
+		fout << t.transcript_id << "\t" << t.samples << "\n";
 	}
 	fout.close();
 	return 0;
