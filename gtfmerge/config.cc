@@ -53,7 +53,7 @@ int parse_parameters(int argc, const char ** argv)
 
 int print_help()
 {
-	printf("\n");
+	printf("rnaseqtools v0.3\n");
 	printf("usage: gtfmerge union <input-gtf-list> <output-unioned-gtf> [options]\n");
 	printf("\n");
 	printf("options:\n");
